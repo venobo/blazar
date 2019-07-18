@@ -11,4 +11,6 @@ export {
   ParentReference,
   forwardRef,
   Optional,
+  UUIDField,
+  IDField,
 } from '@marcj/marshal';

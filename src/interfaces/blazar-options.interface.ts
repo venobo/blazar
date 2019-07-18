@@ -1,8 +1,8 @@
-import * as IPFS from 'ipfs';
+import { OrbitDB } from 'orbit-db';
 
 export interface BlazarModuleOptions {
   scope?: string;
-  ipfs: IPFS;
+  orbitdb: OrbitDB;
 }
 
 export interface BlazarModuleAsyncOptions {

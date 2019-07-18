@@ -3,7 +3,6 @@ import { EntitySchema } from '../utils';
 
 export interface EntityMetadata {
   name: string;
-  indexBy: string;
   relations: RelationMetadata[];
-  schema: EntitySchema,
+  schema: EntitySchema;
 }
