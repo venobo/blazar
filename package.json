@@ -6,7 +6,22 @@
   "author": "Marcus S. Abildskov",
   "license": "MIT",
   "devDependencies": {
+    "@nestjs/testing": "^6.5.3",
+    "@types/jest": "^24.0.15",
     "@types/node": "^12.6.8",
+    "@types/orbit-db": "https://github.com/orbitdb/orbit-db-types.git",
+    "ipfs": "^0.36.4",
+    "jest": "^24.8.0",
+    "prettier": "^1.18.2",
+    "ts-jest": "^24.0.2",
     "typescript": "^3.5.3"
+  },
+  "dependencies": {
+    "@marcj/marshal": "^0.8.10",
+    "@nestjs/common": "^6.5.3",
+    "@nestjs/core": "^6.5.3",
+    "orbit-db": "^0.21.3",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^6.5.2"
   }
 }
