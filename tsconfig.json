@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2017",
     "module": "commonjs",
     "lib": ["esnext"],
     "declaration": true,
@@ -9,7 +9,8 @@
     "strict": true,
     "moduleResolution": "node",
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "strictPropertyInitialization": false
   },
   "include": ["**/*.ts"],
   "exclude": ["node_modules", "**/*.spec.ts"]
