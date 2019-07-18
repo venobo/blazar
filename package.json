@@ -1,0 +1,12 @@
+{
+  "name": "@venobo/blazar",
+  "version": "0.0.1",
+  "main": "lib/index.js",
+  "repository": "https://github.com/venobo/blazar.git",
+  "author": "Marcus S. Abildskov",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^12.6.8",
+    "typescript": "^3.5.3"
+  }
+}
