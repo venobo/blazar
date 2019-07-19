@@ -8,6 +8,7 @@ import { UserService } from './user.service';
   imports: [
     BlazarModule.forFeature([
       User,
+      // Post,
     ]),
   ],
   providers: [

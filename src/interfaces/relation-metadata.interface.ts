@@ -4,6 +4,6 @@ import { RelationOptions } from './relation-options.interface';
 
 export interface RelationMetadata {
   propertyName: string;
-  options: RelationOptions;
-  target: Type<any>;
+  options?: RelationOptions;
+  classType: Type<any>;
 }

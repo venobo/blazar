@@ -14,6 +14,8 @@ jobs:
       script: yarn build
     - stage: test
       script: yarn test
+    - stage: coveralls
+      script: yarn coveralls
     #- stage: deploy
     #  script: yarn publish
     #  if: branch = master

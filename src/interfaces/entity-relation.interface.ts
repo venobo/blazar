@@ -10,7 +10,7 @@ export interface EntityRelation {
   /**
    * @description entity name
    */
-  entityName: string;
+  name: string;
   /**
    * @description Relation hashes
    */
