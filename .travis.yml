@@ -7,9 +7,6 @@ cache:
   directories:
     - coverage
 
-before_script:
-  - yarn install --frozen-lockfile
-
 jobs:
   include:
     - stage: build
