@@ -1,26 +1,24 @@
 import { NestFactory } from '@nestjs/core';
 import { INestApplicationContext } from '@nestjs/common';
-import { take } from 'rxjs/operators';
 import del = require('del');
-import { BlazarService, ofEvent, uuid } from '../src';
+import { BlazarService, uuid } from '../src';
 
 import { AppModule } from './app/app.module';
 import { UserService } from './app/user';
-import { RepositoryEvent } from '../src/enums';
 
 describe('Blazar', () => {
   let blazar: BlazarService;
   let app: INestApplicationContext;
   let user: UserService;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     app = await NestFactory.createApplicationContext(AppModule);
 
     blazar = app.get(BlazarService, { strict: false });
     user = app.get(UserService, { strict: false });
   }, 10000);
 
-  afterEach(async () => {
+  afterAll(async () => {
     await app.close();
     await del([
       __dirname + '/app/ipfs/',
@@ -28,60 +26,61 @@ describe('Blazar', () => {
     ]);
   });
 
-  it('should create user', async () => {
-    const data = await user.repository.create({
-      username: 'Venobo',
-    });
-
-    expect(data).toMatchObject({
-      id: expect.any(String),
-      username: 'Venobo',
-    });
-  });
-
-  describe('relations', () => {
-    let data: any;
-
-    beforeEach(() => {
-      data = {
-        username: uuid(),
-      };
-    });
-
-    it('should create through connect', async () => {
-      const invitedBy = {
-        username: uuid(),
-      };
-
-      const insertion = await user.repository.create(data);
-
-      await user.repository
-        .create(invitedBy)
-        .connect({
-          lol: '',
-          /*invitedBy: {
-            ...insertion,
-          },*/
-        } as any);
-    });
-
-    it('should add entry for relation', async () => {
-      const insertion = await user.repository.create({
-        ...data,
-        invitedBy: {
-          username: uuid(),
-        },
+  describe('create', () => {
+    it('should create user', async () => {
+      const data = await user.repository.create({
+        username: 'Venobo',
       });
 
-      expect(insertion).toMatchObject({
+      expect(data).toMatchObject({
         id: expect.any(String),
-        username: data.username,
-        invitedBy: expect.objectContaining(insertion.invitedBy),
+        username: 'Venobo',
       });
-    }, 10000);
+    });
+
+    describe('relations', () => {
+      let data: any;
+
+      beforeEach(() => {
+        data = {
+          username: uuid(),
+        };
+      });
+
+      /*it('should create through connect', async () => {
+        const invitedBy = {
+          username: uuid(),
+        };
+
+        const insertion = await user.repository.create(data);
+
+        await user.repository
+          .create(invitedBy)
+          .connect({
+            invitedBy: {
+              ...insertion,
+            },
+          });
+      });*/
+
+      it('should add entry for relation', async () => {
+        const insertion = await user.repository.create({
+          ...data,
+          invitedBy: {
+            username: uuid(),
+          },
+        });
+
+        expect(insertion).toMatchObject({
+          id: expect.any(String),
+          username: data.username,
+          invitedBy: expect.objectContaining(insertion.invitedBy),
+        });
+      });
+    });
   });
 
-  describe('events$', () => {
+  /*describe('events$', () => {
     it('should react to database write', async (done) => {
       user.repository.events$.pipe(
         ofEvent(RepositoryEvent.WRITE),
@@ -95,5 +94,5 @@ describe('Blazar', () => {
         username: 'LOL',
       });
     });
-  });
+  });*/
 });
