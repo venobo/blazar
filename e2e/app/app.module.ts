@@ -4,21 +4,25 @@ import { BlazarModule } from '../../src';
 
 import { UserModule } from './user';
 
-console.log(__dirname);
-
 @Module({
   imports: [
     BlazarModule.forRootAsync({
       async useFactory() {
         const ipfs = new IPFS({
-          repo: __dirname + '/blazar',
+          repo: __dirname + '/ipfs',
           EXPERIMENTAL: {
             pubsub: true,
           },
         });
 
+        await new Promise(resolve => ipfs.on('ready', resolve));
+
+        const orbitdb = await require('orbit-db').createInstance(ipfs,{
+          directory: __dirname + '/orbitdb',
+        } as any);
+
         return {
-          ipfs,
+          orbitdb,
         };
       }
     }),

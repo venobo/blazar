@@ -1,14 +1,16 @@
-import { Index, Entity, Field, uuid, forwardRef, Optional } from '../../../src';
+import { Index, Entity, Optional, IDField, Field, Relation, uuid } from '../../../src';
 
-@Entity('blazar.users')
+@Entity()
 export class User {
-  @Index()
-  id: string = uuid();
+  @IDField()
+  id?: string = uuid();
 
   @Field()
+  @Index({ unique: true })
   username: string;
 
-  @Field(forwardRef(() => User), { array: true })
   @Optional()
-  invitedBy?: User[];
+  @Field(User)
+  @Relation()
+  invitedBy?: User;
 }

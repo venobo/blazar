@@ -61,3 +61,8 @@ typings/
 .next
 
 .idea/
+
+e2e/app/ipfs/
+e2e/app/orbitdb/
+
+lib/

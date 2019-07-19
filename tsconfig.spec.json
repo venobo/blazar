@@ -1,8 +1,7 @@
 {
 	"extends": "./tsconfig.json",
 	"compilerOptions": {
-		"types": ["jest", "node"],
-    "strictPropertyInitialization": false
+		"types": ["jest", "node"]
 	},
 	"include": ["**/*.ts"],
 	"exclude": ["node_modules"]
