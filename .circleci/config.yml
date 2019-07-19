@@ -14,7 +14,7 @@ worksflows:
           requires:
             - build
       - deploy:
-          reuires:
+          requires:
             - test
 
 jobs:
