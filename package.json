@@ -4,11 +4,14 @@
   "main": "lib/index.js",
   "repository": "https://github.com/venobo/blazar.git",
   "author": "Marcus S. Abildskov",
-  "files": ["lib"],
+  "files": [
+    "lib"
+  ],
   "license": "MIT",
   "scripts": {
     "build": "rm -rf lib && tsc",
-    "test": "jest"
+    "test": "jest --ci --detectOpenHandles --forceExit",
+    "coveralls": "cat ./coverage/lcov.info | coveralls && rm -rf ./coverage"
   },
   "devDependencies": {
     "@nestjs/common": "6.5.3",
@@ -17,6 +20,7 @@
     "@types/jest": "24.0.15",
     "@types/node": "12.6.8",
     "@types/orbit-db": "https://github.com/orbitdb/orbit-db-types.git",
+    "coveralls": "^3.0.5",
     "del": "^5.0.0",
     "ipfs": "0.36.4",
     "jest": "24.8.0",
