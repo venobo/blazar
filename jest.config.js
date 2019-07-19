@@ -4,5 +4,5 @@ module.exports = {
     '^.+\\.(ts|js)$': 'ts-jest'
   },
   moduleFileExtensions: ['ts', 'js', 'json'],
-  collectCoverage: false,
+  collectCoverage: true,
 };
