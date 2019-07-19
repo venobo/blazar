@@ -3,6 +3,5 @@ module.exports = {
   transform: {
     '^.+\\.(ts|js)$': 'ts-jest'
   },
-  moduleFileExtensions: ['ts', 'js', 'json'],
-  collectCoverage: true,
+  moduleFileExtensions: ['ts', 'js', 'json']
 };

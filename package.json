@@ -11,7 +11,7 @@
   "scripts": {
     "build": "rm -rf lib && tsc",
     "test": "jest --ci --detectOpenHandles --forceExit",
-    "coveralls": "cat ./coverage/lcov.info | coveralls && rm -rf ./coverage"
+    "coveralls": "jest --coverage && cat ./coverage/lcov.info | coveralls"
   },
   "devDependencies": {
     "@nestjs/common": "6.5.3",
