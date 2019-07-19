@@ -1,11 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { INestApplicationContext } from '@nestjs/common';
 import { take } from 'rxjs/operators';
+import del = require('del');
 import { BlazarService, ofEvent, uuid } from '../src';
 
 import { AppModule } from './app/app.module';
 import { UserService } from './app/user';
-import { RepositoryEvent } from '../src/lib/enums';
+import { RepositoryEvent } from '../src/enums';
 
 describe('Blazar', () => {
   let blazar: BlazarService;
@@ -17,9 +18,15 @@ describe('Blazar', () => {
 
     blazar = app.get(BlazarService, { strict: false });
     user = app.get(UserService, { strict: false });
-  });
+  }, 10000);
 
-  afterEach(() => app.close());
+  afterEach(async () => {
+    await app.close();
+    await del([
+      __dirname + '/app/ipfs/',
+      __dirname + '/app/orbitdb/',
+    ]);
+  });
 
   it('should create user', async () => {
     const data = await user.repository.create({
@@ -51,10 +58,11 @@ describe('Blazar', () => {
       await user.repository
         .create(invitedBy)
         .connect({
-          invitedBy: {
+          lol: '',
+          /*invitedBy: {
             ...insertion,
-          },
-        });
+          },*/
+        } as any);
     });
 
     it('should add entry for relation', async () => {
@@ -68,12 +76,9 @@ describe('Blazar', () => {
       expect(insertion).toMatchObject({
         id: expect.any(String),
         username: data.username,
-        invitedBy: {
-          id: expect.any(String),
-          username: data.invitedBy.username,
-        }
+        invitedBy: expect.objectContaining(insertion.invitedBy),
       });
-    });
+    }, 10000);
   });
 
   describe('events$', () => {

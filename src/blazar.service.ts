@@ -1,22 +1,24 @@
 import { Inject, Injectable, Type } from '@nestjs/common';
+import { DocumentStore } from 'orbit-db-docstore';
+import { Reflector } from '@nestjs/core';
 import OrbitDB from 'orbit-db';
 
-import { BLAZAR_ENTITY, BLAZAR_ENTITY_RELATION, BLAZAR_OPTIONS } from './tokens';
+import { BLAZAR_ENTITY, BLAZAR_ENTITY_RELATION, BLAZAR_OPTIONS, BLAZAR_RELATIONS_ADDRESS } from './tokens';
+import { EntitySchema, getEntitySchema } from './utils';
 import { BlazarRepository } from './blazar-repository';
 import {
   BlazarModuleOptions,
   EntityMetadata,
   RelationMetadata,
   RelationOptions,
-  RepositoryRelation,
+  EntityRelation,
 } from './interfaces';
-import { EntitySchema, getEntitySchema } from './utils';
-import { Reflector } from '@nestjs/core';
 
 @Injectable()
 export class BlazarService {
   public readonly repositories = new WeakMap<Type<any>, BlazarRepository<any>>();
-  public readonly entityHashMap = new WeakMap<object, string>();
+  public readonly entityHashMap = new WeakMap<object, string[]>();
+  public readonly entityRelations = new WeakMap<Type<any>, DocumentStore<EntityRelation>>();
   // public readonly entityMetadata = new WeakMap<Type<any>, EntityMetadata>();
   public readonly entities = new Map<string, Type<any>>();
   private readonly orbitdb: OrbitDB;
@@ -74,7 +76,7 @@ export class BlazarService {
   }
 
   async create(): Promise<void> {
-    // this.relationStore = await this.orbitdb.keyvalue(BLAZAR_RELATIONS_ADDRESS);
+    // (this as any).relations = await this.orbitdb.keyvalue(BLAZAR_RELATIONS_ADDRESS);
   }
 
   async createRepository<T extends { id: string }>(entity: Type<T>): Promise<BlazarRepository<T>> {
@@ -88,19 +90,14 @@ export class BlazarService {
       // @ts-ignore
       indexBy: metadata.schema.idField,
     });
-
     await docs.load();
 
-    const relations = await this.orbitdb.kvstore<string[]>(
-      metadata.name + '.relations',
-    );
-
+    const relations = await this.orbitdb.docstore<EntityRelation>(metadata.name + '.relations');
     await relations.load();
 
     const indices = await this.orbitdb.kvstore<string>(
       metadata.name + '.indices',
     );
-
     await indices.load();
 
     const repository = new BlazarRepository(
@@ -114,6 +111,7 @@ export class BlazarService {
 
     this.repositories.set(entity, repository);
     this.entities.set(metadata.name, entity);
+    this.entityRelations.set(entity, relations);
 
     // this.repositories.set(metadata.name, repository);
     // this.entityMetadata.set(entity, metadata);

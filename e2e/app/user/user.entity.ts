@@ -1,9 +1,9 @@
-import { Index, Entity, Optional, IDField, Field, Relation } from '../../../src';
+import { Index, Entity, Optional, IDField, Field, Relation, uuid } from '../../../src';
 
-@Entity('blazar.users')
+@Entity()
 export class User {
   @IDField()
-  id?: string;
+  id?: string = uuid();
 
   @Field()
   @Index({ unique: true })

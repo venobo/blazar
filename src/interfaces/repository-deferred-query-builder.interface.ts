@@ -1,5 +1,6 @@
 export interface RepositoryDeferredQueryBuilder<R, T> {
-  parent: (this: R) => Promise<T>;
-  select?: (this: R, where: Partial<T>, previous: T) => Promise<T>;
-  connect?: (this: R, where: Partial<T>, previous: T) => Promise<T>;
+  root: (this: R) => Promise<T>;
+  select?: (this: R, root: T, where: Partial<T>) => Promise<T>;
+  include?: (this: R, root: T, where: Partial<T>) => Promise<T>;
+  connect?: (this: R, root: T, where: Partial<T>) => Promise<T>;
 }
