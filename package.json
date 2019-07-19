@@ -4,8 +4,10 @@
   "main": "lib/index.js",
   "repository": "https://github.com/venobo/blazar.git",
   "author": "Marcus S. Abildskov",
+  "files": ["lib"],
   "license": "MIT",
   "scripts": {
+    "build": "rm -rf lib && tsc",
     "test": "jest"
   },
   "devDependencies": {
