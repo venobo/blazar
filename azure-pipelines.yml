@@ -24,7 +24,7 @@ steps:
   # Package library for release
   - script: yarn pack
     displayName: Package library for release
-    condition: and(succeeded(), 'master')
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
   - task: CopyFiles@2
     inputs:
@@ -32,14 +32,14 @@ steps:
       contents: 'lib/**/*'
       targetFolder: '$(Build.ArtifactStagingDirectory)/lib'
     displayName: 'Copy dist output'
-    condition: and(succeeded(), 'master')
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
   - task: PublishBuildArtifacts@1
     inputs:
       pathtoPublish: '$(Build.ArtifactStagingDirectory)/lib'
       artifactName: lib
     displayName: 'Publish lib files as artifacts'
-    condition: and(succeeded(), 'master')
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
   - task: CopyFiles@2
     inputs:
@@ -47,7 +47,7 @@ steps:
       contents: '*.tgz'
       targetFolder: '$(Build.ArtifactStagingDirectory)/npm'
     displayName: Copy npm package
-    condition: and(succeeded(), 'master')
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
   - task: CopyFiles@2
     inputs:
@@ -55,14 +55,14 @@ steps:
       contents: 'package.json'
       targetFolder: $(Build.ArtifactStagingDirectory)/npm
     displayName: 'Copy package.json'
-    condition: and(succeeded(), 'master')
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
   - task: PublishBuildArtifacts@1
     inputs:
       pathtoPublish: '$(Build.ArtifactStagingDirectory)/npm'
       artifactName: npm
     displayName: 'Publish npm artifact'
-    condition: and(succeeded(), 'master')
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
   - task: CopyFiles@2
     inputs:
@@ -70,11 +70,11 @@ steps:
       contents: ReleaseNotes.MD
       targetFolder: '$(Build.ArtifactStagingDirectory)/release-notes'
     displayName: Copy Release Notes
-    condition: and(succeeded(), 'master')
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
   - task: PublishBuildArtifacts@1
     inputs:
       pathtoPublish: '$(Build.ArtifactStagingDirectory)/release-notes'
       artifactName: release-notes
     displayName: Publish Release Notes artifact
-    condition: and(succeeded(), 'master')
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
