@@ -5,12 +5,20 @@ defaults: &defaults
   docker:
     - image: circleci/node:12
 
+worksflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+
 jobs:
-  test:
+  build:
     <<: *defaults
     steps:
       - checkout
-
       - restore_cache:
           name: Restore Yarn Package Cache
           keys:
@@ -20,19 +28,24 @@ jobs:
           name: Install Dependencies
           command: yarn install --frozen-lockfile
 
-      - run:
-          name: Run tests
-          command: yarn test
-
       - save_cache:
           name: Save Yarn Package Cache
           key: yarn-packages-{{ checksum "yarn.lock" }}
           paths:
             - ~/.cache/yarn
 
-      - persist_to_workspace:
-          root: ~/repo
-          paths: .
+      - run:
+          name: Build library
+          command: yarn build
+  test:
+    <<: *defaults
+    steps:
+      - checkout
+      - attach_workspace:
+         at: ~/repo
+      - run:
+          name: Run tests
+          command: yarn test
   deploy:
     <<: *defaults
     build:
@@ -40,6 +53,7 @@ jobs:
         only:
           - master
     steps:
+      - checkout
       - attach_workspace:
           at: ~/repo
       - run:
