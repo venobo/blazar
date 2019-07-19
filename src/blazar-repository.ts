@@ -21,7 +21,7 @@ export class BlazarRepository<T extends object> {
 
   constructor(
     private readonly entity: Type<T>,
-    public readonly metadata: EntityMetadata,
+    private readonly metadata: EntityMetadata,
     private readonly docs: DocumentStore<T>,
     private readonly relations: DocumentStore<EntityRelation>,
     private readonly indices: KeyValueStore<string>,
@@ -185,17 +185,18 @@ export class BlazarRepository<T extends object> {
         // @TODO: Make diagram over relation tables
         for (const [field, value] of Object.entries(data)) {
           if (value != null && this.isRelationField(field)) {
-            const { target } = this.getRelationMetadata(field);
-            const repository = this.getRelationRepository(target);
+            const { classType } = this.getRelationMetadata(field);
+            const repository = this.getRelationRepository(classType);
+            const { schema: { name } } = this.manager.entityMetadata.get(classType);
 
             const insertedRelation = await repository.create(value);
             // could be multiple hashes
             const relations = this.getRelatedDataHash(insertedRelation);
 
             entityRelations.push({
-              entityName: repository.metadata.name,
               relations: arrify(relations),
               field,
+              name,
               _id,
             });
 
