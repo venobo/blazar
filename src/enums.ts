@@ -1,3 +1,5 @@
+export { RegisteredEntities } from '@marcj/marshal';
+
 export interface Event<T> {
   event: RepositoryEvent;
   data: T;

@@ -2,14 +2,14 @@ import { Inject, Injectable, Type } from '@nestjs/common';
 import { DocumentStore } from 'orbit-db-docstore';
 import OrbitDB from 'orbit-db';
 
-import { BLAZAR_ENTITY_RELATION, BLAZAR_OPTIONS } from './tokens';
-import { EntitySchema, getEntitySchema, RegisteredEntities } from './utils';
+import { EntitySchema, getEntitySchema } from './utils';
 import { BlazarRepository } from './blazar-repository';
+import { RegisteredEntities } from './enums';
+import { BLAZAR_OPTIONS } from './tokens';
 import {
   BlazarModuleOptions,
   EntityMetadata,
   RelationMetadata,
-  RelationOptions,
   EntityRelation,
 } from './interfaces';
 
@@ -42,6 +42,8 @@ export class BlazarService {
 
         if (classType && entities.includes(classType)) {
           relations.push({
+            isParentReference: propertySchema.isParentReference,
+            isArray: propertySchema.isArray,
             propertyName,
             classType,
           });

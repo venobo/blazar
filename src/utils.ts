@@ -5,7 +5,13 @@ import { filter, pluck } from 'rxjs/operators';
 
 import { Event, RepositoryEvent } from './enums';
 
-export { validate, plainToClass, classToPlain, getEntitySchema, Types, EntitySchema, uuid, ValidationError, ValidationFailed, RegisteredEntities } from '@marcj/marshal';
+export { validate, plainToClass, classToPlain, getEntitySchema, Types, EntitySchema, uuid, ValidationError, ValidationFailed, forwardRef } from '@marcj/marshal';
+
+export function emptyObj(obj: object) {
+  for (const key of Object.keys(obj)) {
+    delete obj[key]
+  }
+}
 
 export function deferredPromise<C, T>(context: C, fn: () => Promise<T>) {
   return new Promise<T>((resolve, reject) => fn.bind(context)().then(resolve, reject));
