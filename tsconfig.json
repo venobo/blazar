@@ -3,13 +3,18 @@
     "target": "es2017",
     "module": "commonjs",
     "lib": ["esnext"],
-    "declaration": true,
+    "declaration": false,
     "importHelpers": true,
+    "sourceMap": false,
     "downlevelIteration": true,
     "moduleResolution": "node",
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "rootDir": "src/",
+    "outDir": "lib/"
   },
-  "include": ["**/*.ts"],
+  "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "**/*.spec.ts"]
 }

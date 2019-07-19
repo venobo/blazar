@@ -10,7 +10,7 @@
   "license": "MIT",
   "scripts": {
     "build": "rm -rf lib && tsc",
-    "test": "yarn run jest --ci --detectOpenHandles --forceExit",
+    "test": "jest --ci --detectOpenHandles --forceExit",
     "coveralls": "cat ./coverage/lcov.info | coveralls && rm -rf ./coverage"
   },
   "devDependencies": {
