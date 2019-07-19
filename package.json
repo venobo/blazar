@@ -5,6 +5,9 @@
   "repository": "https://github.com/venobo/blazar.git",
   "author": "Marcus S. Abildskov",
   "license": "MIT",
+  "scripts": {
+    "test": "jest"
+  },
   "devDependencies": {
     "@nestjs/common": "6.5.3",
     "@nestjs/core": "6.5.3",
