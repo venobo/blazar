@@ -4,9 +4,13 @@ node_js:
 
 cache:
   yarn: true
+  directories:
+    - coverage
 
-before_script:
-  - yarn install --frozen-lockfile
+# only test master and tagged releases on push
+# always test things that aren't pushes (like PRs)
+# See https://github.com/travis-ci/travis-ci/issues/1147
+if: type != push OR branch = master OR branch =~ /^v\d+\.\d+(\.\d+)?(-\S*)?$/
 
 jobs:
   include:
@@ -14,6 +18,8 @@ jobs:
       script: yarn build
     - stage: test
       script: yarn test
+    - stage: coveralls
+      script: yarn coveralls
     #- stage: deploy
     #  script: yarn publish
     #  if: branch = master
