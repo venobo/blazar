@@ -7,6 +7,11 @@ cache:
   directories:
     - coverage
 
+# only test master and tagged releases on push
+# always test things that aren't pushes (like PRs)
+# See https://github.com/travis-ci/travis-ci/issues/1147
+if: type != push OR branch = master OR branch =~ /^v\d+\.\d+(\.\d+)?(-\S*)?$/
+
 jobs:
   include:
     - stage: build

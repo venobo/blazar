@@ -36,6 +36,8 @@ describe('Blazar', () => {
         id: expect.any(String),
         username: 'Venobo',
       });
+
+      console.log(data);
     });
 
     describe('relations', () => {
