@@ -19,12 +19,9 @@
     "@nestjs/testing": "6.5.3",
     "@types/jest": "24.0.15",
     "@types/node": "12.6.8",
-    "@types/orbit-db": "https://github.com/orbitdb/orbit-db-types.git",
     "coveralls": "^3.0.5",
-    "del": "^5.0.0",
-    "ipfs": "0.36.4",
+    "gun": "^0.2019.712",
     "jest": "24.8.0",
-    "orbit-db": "^0.21.3",
     "prettier": "1.18.2",
     "reflect-metadata": "0.1.13",
     "rxjs": "6.5.2",
@@ -34,7 +31,7 @@
   },
   "peerDependencies": {
     "@nestjs/core": "^6.5.3",
-    "orbit-db": "^0.21.3",
+    "gun": "^0.2019.712",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^6.5.2"
   },

@@ -1,10 +1,9 @@
 import { NestFactory } from '@nestjs/core';
 import { INestApplicationContext } from '@nestjs/common';
-import del = require('del');
 import { BlazarService, uuid } from '../src';
 
 import { AppModule } from './app/app.module';
-import { UserService } from './app/user';
+import { UserService, User } from './app/user';
 
 describe('Blazar', () => {
   let blazar: BlazarService;
@@ -16,85 +15,73 @@ describe('Blazar', () => {
 
     blazar = app.get(BlazarService, { strict: false });
     user = app.get(UserService, { strict: false });
-  }, 10000);
+  });
 
-  afterAll(async () => {
-    await app.close();
-    await del([
-      __dirname + '/app/ipfs/',
-      __dirname + '/app/orbitdb/',
-    ]);
+  afterAll(() => app.close());
+
+  describe('find', () => {
+    it('should find one by id', async () => {
+      const id = uuid();
+
+      // @ts-ignore
+      await blazar.entityGraphs.get(User).get(id).put({ id });
+
+      expect(await user.repository.find(id)).toMatchObject({ id });
+    });
+
+    it('should return null if no entry was found', async () => {
+      expect(await user.repository.find('Blazar')).toStrictEqual(null);
+    });
+
+    it('should find one by query');
+
+    it('should find one by indices');
+
+    it('should find multiple by query');
   });
 
   describe('create', () => {
-    it('should create user', async () => {
+    it('should create user', async (done) => {
       const data = await user.repository.create({
         username: 'Venobo',
       });
 
-      expect(data).toMatchObject({
-        id: expect.any(String),
-        username: 'Venobo',
-      });
+      blazar.entityGraphs.get(User).get(data.id).once(user => {
+        expect(user).toMatchObject(data);
 
-      console.log(data);
+        done();
+      });
     });
 
-    describe('relations', () => {
-      let data: any;
-
-      beforeEach(() => {
-        data = {
-          username: uuid(),
-        };
+    describe('connect', () => {
+      it('should throw error if relation does not exist', async () => {
+        await expect(
+          user.repository
+            .create({ username: 'Test' })
+            .connect({
+              invitedBy: {
+                username: 'Test2',
+              },
+            }),
+        ).rejects.toThrow(Error);
       });
 
-      /*it('should create through connect', async () => {
-        const invitedBy = {
-          username: uuid(),
-        };
+      it('should connect if relation does exist', async () => {
+        await expect((async () => {
+          const test = await user.repository.create({ username: 'Test' });
 
-        const insertion = await user.repository.create(data);
+          const test2 = await user.repository
+            .create({ username: 'Test2' })
+            .connect({
+              invitedBy: test,
+            });
 
-        await user.repository
-          .create(invitedBy)
-          .connect({
-            invitedBy: {
-              ...insertion,
-            },
+          expect(test2).toMatchObject({
+            username: 'Test2',
+            invitedBy: test,
           });
-      });*/
-
-      it('should add entry for relation', async () => {
-        const insertion = await user.repository.create({
-          ...data,
-          /*invitedBy: {
-            username: uuid(),
-          },*/
-        });
-
-        expect(insertion).toMatchObject({
-          id: expect.any(String),
-          username: data.username,
-          // invitedBy: expect.objectContaining(insertion.invitedBy),
-        });
+        })()).rejects.toThrow(Error);
       });
     });
   });
-
-  /*describe('events$', () => {
-    it('should react to database write', async (done) => {
-      user.repository.events$.pipe(
-        ofEvent(RepositoryEvent.WRITE),
-        take(1),
-      ).subscribe(data => {
-        expect(data).toBeDefined();
-        done();
-      });
-
-      await user.repository.create({
-        username: 'LOL',
-      });
-    });
-  });*/
 });

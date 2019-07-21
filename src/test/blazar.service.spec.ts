@@ -1,6 +1,7 @@
-import { Entity, Field, FieldArray, } from '../decorators';
-import { emptyObj, forwardRef, getEntitySchema } from '../utils';
-import { RegisteredEntities } from '../enums';
+jest.mock('gun');
+
+import { Entity, Field, FieldArray, forwardRef, getEntitySchema, RegisteredEntities } from '../marshal';
+import { emptyObj } from '../utils';
 
 import { BlazarService } from '../blazar.service';
 
@@ -9,7 +10,6 @@ describe('BlazarService', () => {
 
   beforeEach(() => {
     emptyObj(RegisteredEntities);
-    // @ts-ignore
     blazar = new BlazarService({});
   });
 

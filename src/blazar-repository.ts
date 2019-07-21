@@ -1,49 +1,45 @@
-import { DocumentStore } from 'orbit-db-docstore';
-import { KeyValueStore } from 'orbit-db-kvstore';
 import { Type } from '@nestjs/common';
-import { Subject } from 'rxjs';
 import arrify = require('arrify');
 
-import { plainToClass, uuid, validate, ValidationFailed, deferredPromise } from './utils';
-import { Event, RepositoryEvent } from './enums';
-import { BlazarService } from './blazar.service';
+import { plainToClass, PropertySchema, uuid, validate, ValidationFailed } from './marshal';
 import { InvalidRelationFieldException, UnknownFieldException } from './exceptions';
+import { BlazarService } from './blazar.service';
+import { deferredPromise, fromChain } from './utils';
 import {
   EntityMetadata,
   RelationMetadata,
   RepositoryDeferredQueryBuilder,
   RepositoryQueryBuilder,
-  EntityRelation,
+  GraphNode,
 } from './interfaces';
 
-export class BlazarRepository<T extends object> {
-  public readonly events$ = new Subject<Event<any>>();
-
+export class BlazarRepository<T = any> {
   constructor(
     private readonly entity: Type<T>,
     private readonly metadata: EntityMetadata,
-    private readonly docs: DocumentStore<T>,
-    private readonly relations: DocumentStore<EntityRelation>,
-    private readonly indices: KeyValueStore<string>,
+    private readonly graph: GraphNode<T>,
     private readonly manager: BlazarService,
-  ) {
-    Object.values(RepositoryEvent).forEach(event => {
-      this.docs.events.on(event, (...data: any[]) => {
-        this.events$.next({
-          event,
-          data,
-        });
-      });
-    });
+  ) {}
+
+  private getPropertySchema(field: string): PropertySchema {
+    return this.metadata.schema.getProperty(field);
+  }
+
+  private getIdField() {
+    return this.metadata.schema.idField;
+  }
+
+  private getIndices() {
+    return this.metadata.schema.indices;
   }
 
   private getRelationMetadata(key: string): RelationMetadata {
     return this.metadata.relations.find(({ propertyName }) => propertyName === key);
   }
 
-  private getRelationRepository(entity: Type<any>): BlazarRepository<any> {
+  /*private getRelationRepository<R = any>(entity: Type<R>): BlazarRepository<R> {
     return this.manager.repositories.get(entity);
-  }
+  }*/
 
   private isIdField(key: string) {
     return this.metadata.schema.idField === key;
@@ -61,22 +57,28 @@ export class BlazarRepository<T extends object> {
     return this.metadata.relations.some(({ propertyName }) => propertyName === key);
   }
 
-  // @TODO: Should event emitters be used instead ?
-  async delete(key: string): Promise<string> {
-    if (this.metadata.relations.length > 0) {
-
-    }
-
-    const hash = await this.docs.del(key);
-
-    // if key gets deleted and it exists in relation table
-    // delete all relations as well
-    return hash;
+  private getRelationFields(): string[] {
+    return this.metadata.relations.map(({ propertyName }) => propertyName);
   }
 
-  private getRelatedDataHash(insertion: T): string[] {
+  private getRepositoryByField<K extends keyof T>(field: string): BlazarRepository<T[K]> {
+    const { classType } = this.getRelationMetadata(field);
+    return this.manager.repositories.get(classType);
+  }
+
+  private getEntityGraph<K extends keyof T>(field: string): GraphNode<T[K]> {
+    const { classType } = this.getRelationMetadata(field);
+    return this.manager.entityGraphs.get(classType);
+  }
+
+  private getRootNode(root: T) {
+    const idField = this.getIdField();
+    return this.graph.get(root[idField]);
+  }
+
+  /*private getRelatedDataHash(insertion: T): string[] {
     return this.manager.entityHashMap.get(insertion);
-  }
+  }*/
 
   private createQueryBuilder(
     { root, connect, select, include }: RepositoryDeferredQueryBuilder<this, T>,
@@ -95,15 +97,17 @@ export class BlazarRepository<T extends object> {
       promise.select = async (where: T) => await select.bind(this)(await promise, where);
     }
 
+    // subscribe
+
     return promise;
   }
 
-  private async createRelations(relations: EntityRelation[]) {
+  /*private async createRelations(relations: EntityRelation[]) {
     await Promise.all(relations.map(async (relation) => {
       // @ts-ignore
       await this.relations.put(relation);
     }));
-  }
+  }*/
 
   private validate(data: T): T {
     const errors = validate(this.entity, { ...data });
@@ -159,12 +163,25 @@ export class BlazarRepository<T extends object> {
         }
       }
     });
+  }
+ */
 
+  find(id: string): RepositoryQueryBuilder<null | T>;
+  find(where: string | T ): RepositoryQueryBuilder<null | T | T[]> {
+    const idField = this.getIdField();
 
+    return this.createQueryBuilder({
+      async root() {
+        if (typeof where === 'string') {
+          try {
+            return await fromChain(this.graph.get(where));
+          } catch {}
 
-    // for each index and id field
-    // await this.indices.set(created[idField], createdHash);
-  }*/
+          return null;
+        }
+      }
+    });
+  }
 
   /**
    const data = await userRepository
@@ -172,64 +189,56 @@ export class BlazarRepository<T extends object> {
     .connect({ invitedBy: { username: 'Github' } });
    */
   create(input: T): RepositoryQueryBuilder<T> {
-    const { idField } = this.metadata.schema;
-
-    const data = this.validate(input);
+    // const relationFields = this.getRelationFields();
+    const idField = this.getIdField();
 
     return this.createQueryBuilder({
       async root() {
-        const entityRelations: EntityRelation[] = [];
-        const insertedRelations: { field: string, relation: T }[] = [];
-        const _id = data[idField] || (data[idField] = uuid());
+        const id = input[idField] || (input[idField] = uuid());
+        const data = this.validate(input);
+
+        const relatedPropertyNodes: { id: string, property: PropertySchema, node: GraphNode }[] = [];
+        const nodeData: Partial<T> = {};
 
         // @TODO: Make diagram over relation tables
-        for (const [field, value] of Object.entries(data)) {
-          if (value != null && this.isRelationField(field)) {
-            const { classType } = this.getRelationMetadata(field);
-            const repository = this.getRelationRepository(classType);
-            const { schema: { name } } = this.manager.entityMetadata.get(classType);
+        await Promise.all(Object.entries(data).map(async ([field, value]) => {
+          const property = this.getPropertySchema(field);
 
-            const insertedRelation = await repository.create(value);
-            // could be multiple hashes
-            const relations = this.getRelatedDataHash(insertedRelation);
+          if (this.isRelationField(field)) {
+            const repository = this.getRepositoryByField(field);
 
-            entityRelations.push({
-              relations: arrify(relations),
-              field,
-              name,
-              _id,
-            });
+            await Promise.all(arrify(value).map(async (value) => {
+              // @ts-ignore
+              const { id } = await repository.create(value);
+              const graph = this.getEntityGraph(field);
+              const node = graph.get(id);
 
-            insertedRelations.push({
-              relation: insertedRelation,
-              field,
-            });
+              relatedPropertyNodes.push({
+                property,
+                node,
+                id,
+              });
+            }));
 
+            nodeData[field] = data[field];
             delete data[field];
           }
-        }
+        }));
 
-        const created = plainToClass(this.entity, data);
+        const createdNode = await this.graph.get(id).put(data);
 
-        // @ts-ignore
-        const createdHash = await this.docs.put(created);
-        // for each index and id field
-        await this.indices.set(_id, createdHash);
+        await Promise.all(relatedPropertyNodes.map(async ({ property, node }) => {
+          // @ts-ignore
+          await createdNode.get(property.name).set(node);
+        }));
 
-        this.manager.entityHashMap.set(created, createdHash);
-
-        await this.createRelations(entityRelations);
-
-        return insertedRelations.reduce((data, { field, relation }) => ({
-          ...data,
-          [field]: relation,
-        }), created);
+        return plainToClass(this.entity, { ...data, ...nodeData });
       },
       // @TODO: Needs to be coded
       async connect(root: T, where: T) {
-        const rootHash = this.getRelatedDataHash(root);
+        const rootNode = this.getRootNode(root);
 
-        for (const [field, value] of Object.entries(where)) {
+        await Promise.all(Object.entries(where).map(async ([field, value]) => {
           if (!this.hasField(field)) {
             throw new UnknownFieldException(this.entity, field);
           }
@@ -237,7 +246,17 @@ export class BlazarRepository<T extends object> {
           if (!this.isRelationField(field)) {
             throw new InvalidRelationFieldException(this.entity, field);
           }
-        }
+
+          // @TODO: Indices and querying as well
+          // @TODO: Check for parent references
+          const graph = this.getEntityGraph(field);
+          const node = graph.get(value);
+
+          // @ts-ignore
+          await rootNode.get(field)
+            .not(() => { throw new Error('Relation doesnt exist, did you mean to create it?'); })
+            .set(node);
+        }));
 
         return root;
       },

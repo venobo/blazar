@@ -1,32 +1,28 @@
-import { Inject, Injectable, Type } from '@nestjs/common';
-import { DocumentStore } from 'orbit-db-docstore';
-import OrbitDB from 'orbit-db';
+import { Inject, Injectable, Optional, Type } from '@nestjs/common';
+import * as Gun from 'gun';
+import 'gun/lib/then';
+import 'gun/lib/unset';
+import 'gun/lib/not';
 
-import { EntitySchema, getEntitySchema } from './utils';
+import { BlazarGun, BlazarModuleOptions, EntityMetadata, GraphNode, RelationMetadata } from './interfaces';
+import { RegisteredEntities, EntitySchema, getEntitySchema } from './marshal';
 import { BlazarRepository } from './blazar-repository';
-import { RegisteredEntities } from './enums';
 import { BLAZAR_OPTIONS } from './tokens';
-import {
-  BlazarModuleOptions,
-  EntityMetadata,
-  RelationMetadata,
-  EntityRelation,
-} from './interfaces';
 
 @Injectable()
 export class BlazarService {
+  public readonly gundb = Gun<BlazarGun>(this.options);
   public readonly repositories = new WeakMap<Type<any>, BlazarRepository<any>>();
-  public readonly entityHashMap = new WeakMap<object, string[]>();
-  public readonly entityRelations = new WeakMap<Type<any>, DocumentStore<EntityRelation>>();
+  public readonly entityGraphs = new WeakMap<Type<any>, GraphNode>();
+  // public readonly entityHashMap = new WeakMap<object, string[]>();
+  // public readonly entityRelations = new WeakMap<Type<any>, DocumentStore<EntityRelation>>();
   public readonly entityMetadata = new WeakMap<Type<any>, EntityMetadata>();
   public readonly entities = new Map<string, Type<any>>();
-  private readonly orbitdb: OrbitDB;
-  private readonly scope?: string;
 
-  constructor(@Inject(BLAZAR_OPTIONS) options: BlazarModuleOptions) {
-    this.orbitdb = options.orbitdb;
-    this.scope = options.scope;
-  }
+  constructor(
+    @Optional() @Inject(BLAZAR_OPTIONS)
+    private readonly options: BlazarModuleOptions,
+  ) {}
 
   /*private getEntityRelationOptions(target: Object, propertyName: string): RelationOptions | undefined {
     return Reflect.getMetadata(BLAZAR_ENTITY_RELATION, target, propertyName);
@@ -73,15 +69,20 @@ export class BlazarService {
   }
 
   async close() {
-    await this.orbitdb.disconnect();
+    // await this.orbitdb.disconnect();
   }
 
   async create(): Promise<void> {}
 
-  async createRepository<T extends { id: string }>(entity: Type<T>): Promise<BlazarRepository<T>> {
+  async createRepository(entity: Type<any>): Promise<BlazarRepository<any>> {
     const metadata = this.getEntityMetadata(entity);
 
-    const docs = await this.orbitdb.docstore<T>(metadata.schema.name, {
+    const graph = this.gundb.get(metadata.schema.name);
+    const schema = graph.get('schema');
+    const indices = graph.get('indices');
+    // const relations = graph.get('relations');
+
+    /*const docs = await this.orbitdb.docstore<T>(metadata.schema.name, {
       // @ts-ignore
       indexBy: metadata.schema.idField,
     });
@@ -93,20 +94,19 @@ export class BlazarService {
     const indices = await this.orbitdb.kvstore<string>(
       metadata.schema.name + '.indices',
     );
-    await indices.load();
+    await indices.load();*/
 
     const repository = new BlazarRepository(
       entity,
       metadata,
-      docs,
-      relations,
-      indices,
+      schema,
       this,
     );
 
     this.repositories.set(entity, repository);
     this.entities.set(metadata.schema.name, entity);
-    this.entityRelations.set(entity, relations);
+    // this.entityRelations.set(entity, relations);
+    this.entityGraphs.set(entity, schema);
     this.entityMetadata.set(entity, metadata);
 
     return repository;

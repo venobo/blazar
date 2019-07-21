@@ -66,3 +66,7 @@ e2e/app/ipfs/
 e2e/app/orbitdb/
 
 lib/
+
+radata
+ossl
+*.tmp

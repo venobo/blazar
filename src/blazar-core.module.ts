@@ -12,7 +12,7 @@ import { BLAZAR_OPTIONS } from './tokens';
 export class BlazarCoreModule implements OnModuleInit, OnModuleDestroy {
   constructor(private readonly blazar: BlazarService) {}
 
-  static forRoot(options: BlazarModuleOptions): DynamicModule {
+  static forRoot(options?: BlazarModuleOptions): DynamicModule {
     return {
       module: BlazarCoreModule,
       providers: [
@@ -24,7 +24,7 @@ export class BlazarCoreModule implements OnModuleInit, OnModuleDestroy {
     };
   }
 
-  static forRootAsync(options: BlazarModuleAsyncOptions): DynamicModule {
+  static forRootAsync(options?: BlazarModuleAsyncOptions): DynamicModule {
     return {
       module: BlazarCoreModule,
       providers: [

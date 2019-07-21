@@ -1,11 +1,10 @@
 import { UUIDField, Index, Entity, Optional, IDField, Field, ParentReference, uuid } from '../../../src';
-import { FieldArray, forwardRef } from '@marcj/marshal';
 
 @Entity('user')
 export class User {
   @IDField()
   @UUIDField()
-  id?: string = uuid();
+  id?: string;
 
   @Field()
   @Index({ unique: true })
@@ -14,11 +13,10 @@ export class User {
   //@FieldArray(forwardRef(() => Post))
   //posts: Post[] = [];
 
-  //@Optional()
-  //@Field(User)
-  // @ParentReference()
-  // @Relation()
-  //invitedBy?: User;
+  @Optional()
+  @Field(User)
+  @ParentReference()
+  invitedBy?: User;
 }
 
 /*@Entity('post')

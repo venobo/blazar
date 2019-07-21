@@ -5,3 +5,4 @@ export * from './tokens';
 export * from './utils';
 export * from './interfaces';
 export * from './blazar.service';
+export * from './marshal';

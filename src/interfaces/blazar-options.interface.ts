@@ -1,9 +1,6 @@
-import { OrbitDB } from 'orbit-db';
+import * as Gun from 'gun';
 
-export interface BlazarModuleOptions {
-  scope?: string;
-  orbitdb: OrbitDB;
-}
+export type BlazarModuleOptions = Gun.ConstructorOptions;
 
 export interface BlazarModuleAsyncOptions {
   useFactory: (...args: any[]) => Promise<BlazarModuleOptions> | BlazarModuleOptions;

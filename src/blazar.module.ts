@@ -7,14 +7,14 @@ import { BlazarCoreModule } from './blazar-core.module';
 
 @Module({})
 export class BlazarModule {
-  static forRoot(options: BlazarModuleOptions): DynamicModule {
+  static forRoot(options?: BlazarModuleOptions): DynamicModule {
     return {
       module: BlazarModule,
       imports: [BlazarCoreModule.forRoot(options)],
     };
   }
 
-  static forRootAsync(options: BlazarModuleAsyncOptions): DynamicModule {
+  static forRootAsync(options?: BlazarModuleAsyncOptions): DynamicModule {
     return {
       module: BlazarModule,
       imports: [BlazarCoreModule.forRootAsync(options)],
