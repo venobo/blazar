@@ -23,7 +23,7 @@
     "coveralls": "^3.0.5",
     "del": "^5.0.0",
     "ipfs": "0.36.4",
-    "jest": "24.8.0",
+    "jest": "24.9.0",
     "orbit-db": "^0.21.3",
     "prettier": "1.18.2",
     "reflect-metadata": "0.1.13",
