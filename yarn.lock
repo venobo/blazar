@@ -562,22 +562,24 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^12.0.9"
 
-"@marcj/estdlib@^0.1.6":
-  version "0.1.10"
-  resolved "https://registry.yarnpkg.com/@marcj/estdlib/-/estdlib-0.1.10.tgz#82b79e13d79525d46c6c4e704cd08ee4c4fc5ef0"
-  integrity sha512-NOBcqvGKesZyuzgc2/QznNpm4gCc7Ff3u/H5YbifEAI/K+K/l4kJfBNjT7kuzOFdi/yPzcCaVZOnkVBO0MtjpQ==
+"@marcj/estdlib@^0.1.17":
+  version "0.1.17"
+  resolved "https://registry.yarnpkg.com/@marcj/estdlib/-/estdlib-0.1.17.tgz#1a7c238f9e787b43fd7a045cf95bc008cfae92e7"
+  integrity sha512-1kwmjG5foLmx6SN4u8Fw+47A9A2EuSdIjhH4m75TMVQ1WBTCBdUE6lO/BD0VDACscofdcAhzXqS3F0ivrFZwlg==
   dependencies:
     dot-prop "^4.2.0"
 
-"@marcj/marshal@0.8.10":
-  version "0.8.10"
-  resolved "https://registry.yarnpkg.com/@marcj/marshal/-/marshal-0.8.10.tgz#6600f7fa9bb9d85f46cc89f37dbe8ca5ee7e938f"
-  integrity sha512-DupxgKiLCq3VsIiBkCpVL3WOvGoJsA1sf8QLcqqjBJJUD+q/dFtYS9F8mY47DNlCxJ9iX7DKpf/Q2kCBt3GtWQ==
+"@marcj/marshal@1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@marcj/marshal/-/marshal-1.0.2.tgz#0c30a031e524750d42d284096c1161614c5d7129"
+  integrity sha512-jA7Tik7uVT3rVbWaDwkPaCll1fOmwkQNl0Pa+qq8zv92EyJMbEAtLfiB+Y6n0GIKJwWeoEER5Hc5hpA7s5W8zg==
   dependencies:
-    "@marcj/estdlib" "^0.1.6"
+    "@marcj/estdlib" "^0.1.17"
     clone "^2.1.2"
     get-parameter-names "^0.3.0"
     uuid "^3.2.1"
+  optionalDependencies:
+    moment "^2.0.0"
 
 "@nestjs/common@6.5.3":
   version "6.5.3"
@@ -6289,6 +6291,11 @@ module-deps@^6.0.0:
     subarg "^1.0.0"
     through2 "^2.0.0"
     xtend "^4.0.0"
+
+moment@^2.0.0:
+  version "2.24.0"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
+  integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
 
 mortice@^1.2.1:
   version "1.2.2"

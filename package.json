@@ -39,7 +39,7 @@
     "rxjs": "^6.5.2"
   },
   "dependencies": {
-    "@marcj/marshal": "0.8.10",
+    "@marcj/marshal": "1.0.2",
     "arrify": "^2.0.1"
   },
   "resolutions": {
