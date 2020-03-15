@@ -14,9 +14,9 @@
     "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
   "devDependencies": {
-    "@nestjs/common": "6.5.3",
-    "@nestjs/core": "6.5.3",
-    "@nestjs/testing": "6.5.3",
+    "@nestjs/common": "6.11.11",
+    "@nestjs/core": "6.11.11",
+    "@nestjs/testing": "6.11.11",
     "@types/jest": "24.0.16",
     "@types/node": "12.6.8",
     "@types/orbit-db": "https://github.com/orbitdb/orbit-db-types.git",
