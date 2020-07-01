@@ -562,22 +562,25 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^12.0.9"
 
-"@marcj/estdlib@^0.1.6":
-  version "0.1.10"
-  resolved "https://registry.yarnpkg.com/@marcj/estdlib/-/estdlib-0.1.10.tgz#82b79e13d79525d46c6c4e704cd08ee4c4fc5ef0"
-  integrity sha512-NOBcqvGKesZyuzgc2/QznNpm4gCc7Ff3u/H5YbifEAI/K+K/l4kJfBNjT7kuzOFdi/yPzcCaVZOnkVBO0MtjpQ==
+"@marcj/estdlib@^0.1.18":
+  version "0.1.19"
+  resolved "https://registry.yarnpkg.com/@marcj/estdlib/-/estdlib-0.1.19.tgz#c14ae4a5a8071f84479611e9fca76b52baeb31b0"
+  integrity sha512-tkG4T51MurVlZapG8HAj6qdLE5uCltemsmHkmbUmbW6OMvink2T4TgMx/DL4KIiqmLhh734Uq50n/grmluttgA==
   dependencies:
     dot-prop "^4.2.0"
 
-"@marcj/marshal@0.8.10":
-  version "0.8.10"
-  resolved "https://registry.yarnpkg.com/@marcj/marshal/-/marshal-0.8.10.tgz#6600f7fa9bb9d85f46cc89f37dbe8ca5ee7e938f"
-  integrity sha512-DupxgKiLCq3VsIiBkCpVL3WOvGoJsA1sf8QLcqqjBJJUD+q/dFtYS9F8mY47DNlCxJ9iX7DKpf/Q2kCBt3GtWQ==
+"@marcj/marshal@2.1.13":
+  version "2.1.13"
+  resolved "https://registry.yarnpkg.com/@marcj/marshal/-/marshal-2.1.13.tgz#42017cf32bf531ef443f1c08c772cd1bb2652bc7"
+  integrity sha512-Zba5MQDazpMqB6lun/L9pqWS4yBzJ5VALq7eUxHHPq/q/SW2gMPXEAAZwdUBauxWVV3O4ShWAGzbJ1paFD/Ypw==
   dependencies:
-    "@marcj/estdlib" "^0.1.6"
+    "@marcj/estdlib" "^0.1.18"
+    buffer "^5.4.3"
     clone "^2.1.2"
     get-parameter-names "^0.3.0"
     uuid "^3.2.1"
+  optionalDependencies:
+    moment "^2.0.0"
 
 "@nestjs/common@6.5.3":
   version "6.5.3"
@@ -1742,6 +1745,14 @@ buffer@^5.0.2, buffer@^5.2.1:
   version "5.2.1"
   resolved "https://registry.yarnpkg.com/buffer/-/buffer-5.2.1.tgz#dd57fa0f109ac59c602479044dca7b8b3d0b71d6"
   integrity sha512-c+Ko0loDaFfuPWiL02ls9Xd3GO3cPVmUobQ6t3rXNUk304u6hGq+8N/kFi+QEIKhzK3uwolVhLzszmfLmMLnqg==
+  dependencies:
+    base64-js "^1.0.2"
+    ieee754 "^1.1.4"
+
+buffer@^5.4.3:
+  version "5.6.0"
+  resolved "https://registry.yarnpkg.com/buffer/-/buffer-5.6.0.tgz#a31749dc7d81d84db08abf937b6b8c4033f62786"
+  integrity sha512-/gDYp/UtU0eA1ys8bOs9J6a+E/KWIY+DZ+Q2WESNUA0jFRsJOc0SNUO6xJ5SGA1xueg3NL65W6s+NY5l9cunuw==
   dependencies:
     base64-js "^1.0.2"
     ieee754 "^1.1.4"
@@ -6289,6 +6300,11 @@ module-deps@^6.0.0:
     subarg "^1.0.0"
     through2 "^2.0.0"
     xtend "^4.0.0"
+
+moment@^2.0.0:
+  version "2.27.0"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.27.0.tgz#8bff4e3e26a236220dfe3e36de756b6ebaa0105d"
+  integrity sha512-al0MUK7cpIcglMv3YF13qSgdAIqxHTO7brRtaz3DlSULbqfazqkc5kEjNrLDOM7fsjshoFIihnU8snrP7zUvhQ==
 
 mortice@^1.2.1:
   version "1.2.2"
