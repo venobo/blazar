@@ -17,7 +17,7 @@
     "@nestjs/common": "6.5.3",
     "@nestjs/core": "6.5.3",
     "@nestjs/testing": "6.5.3",
-    "@types/jest": "24.0.16",
+    "@types/jest": "26.0.23",
     "@types/node": "12.6.8",
     "@types/orbit-db": "https://github.com/orbitdb/orbit-db-types.git",
     "coveralls": "^3.0.5",
