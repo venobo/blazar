@@ -28,7 +28,7 @@
     "prettier": "1.18.2",
     "reflect-metadata": "0.1.13",
     "rxjs": "6.5.2",
-    "ts-jest": "24.0.2",
+    "ts-jest": "26.5.6",
     "type-fest": "^0.6.0",
     "typescript": "3.5.3"
   },
