@@ -24,7 +24,7 @@
     "del": "^5.0.0",
     "ipfs": "0.36.4",
     "jest": "24.8.0",
-    "orbit-db": "^0.21.3",
+    "orbit-db": "0.26.1",
     "prettier": "1.18.2",
     "reflect-metadata": "0.1.13",
     "rxjs": "6.5.2",
